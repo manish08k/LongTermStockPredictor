@@ -4,7 +4,7 @@ AI-powered stock analysis and prediction system designed to identify the best lo
 
 ---
 
-## 🚀 Overview
+# 🚀 Overview
 
 LongTermStockPredictor is a quantitative finance and machine learning project that analyzes historical market data, technical indicators, and financial patterns to predict strong long-term investment stocks.
 
@@ -52,51 +52,119 @@ LongTermStockPredictor/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-🛠️ Technologies Used
-Python
-Pandas
-NumPy
-Scikit-learn
-XGBoost
-LightGBM
-Matplotlib
-Seaborn
-PyTorch / TensorFlow
-yFinance
-TA-Lib
-📦 Installation
+```
+
+---
+
+# 🛠️ Technologies Used
+
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- XGBoost
+- LightGBM
+- Matplotlib
+- Seaborn
+- PyTorch / TensorFlow
+- yFinance
+- TA-Lib
+
+---
+
+# 📦 Installation
+
 Clone the repository:
+
+```bash
 git clone https://github.com/manish08k/LongTermStockPredictor.git
+```
+
 Move into the project folder:
+
+```bash
 cd LongTermStockPredictor
+```
+
 Create virtual environment:
+
+```bash
 python -m venv venv
+```
+
 Activate virtual environment:
-Mac/Linux
+
+### Mac/Linux
+
+```bash
 source venv/bin/activate
-Windows
+```
+
+### Windows
+
+```bash
 venv\Scripts\activate
+```
+
 Install dependencies:
+
+```bash
 pip install -r requirements.txt
-▶️ Usage
+```
+
+---
+
+# ▶️ Usage
+
 Run the project:
+
+```bash
 python main.py
-📊 Planned Features
-Real-time stock prediction
-Portfolio optimization
-Deep learning models
-News sentiment analysis
-Fundamental analysis integration
-Streamlit dashboard
-Automated buy/sell signals
-Cloud deployment
-Mobile app integration
-🎯 Goal
+```
+
+---
+
+# 📊 Planned Features
+
+- Real-time stock prediction
+- Portfolio optimization
+- Deep learning models
+- News sentiment analysis
+- Fundamental analysis integration
+- Streamlit dashboard
+- Automated buy/sell signals
+- Cloud deployment
+- Mobile app integration
+
+---
+
+# 🎯 Goal
+
 The goal of this project is to build an intelligent AI-driven investment assistant capable of identifying fundamentally strong stocks with high long-term growth potential.
-⚠️ Disclaimer
-This project is for educational and research purposes only.
+
+---
+
+# ⚠️ Disclaimer
+
+This project is for educational and research purposes only.  
 It does not provide financial advice or guarantee investment returns.
+
 Always do your own research before investing.
-👨‍💻 Author
+
+---
+
+# 👨‍💻 Author
+
 Manish Nalumachu
-GitHub: https://github.com/manish08k
+
+- GitHub: https://github.com/manish08k
+
+---
+
+# ⭐ Support
+
+If you like this project:
+- Star the repository
+- Fork the project
+- Contribute improvements
+- Share feedback
