@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Pytest
+.pytest_cache/
+
+# Logs
+logs/
+*.log
+
+# Model files
+*.h5
+*.pt
+*.pth
+*.pkl
+*.joblib
+
+# MacOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Data files
+data/raw/
+data/processed/
+
+# Results
+results/
+
+# Temporary files
+temp/
+tmp/
+
+# Secrets
+.env
+config.secret.yaml
+
+# Build files
+dist/
+build/
+
+# Coverage
+.coverage
+htmlcov/

@@ -1,0 +1,183 @@
+backtest:
+  benchmark: ^NSEI
+  end_date: '2024-12-31'
+  initial_capital: 1000000
+  min_trading_days: 126
+  rebalance_frequency: monthly
+  slippage: 0.0005
+  slippage_bps: 0.0005
+  start_date: '2020-01-01'
+  transaction_cost: 0.001
+  transaction_cost_bps: 0.001
+  walk_forward:
+    step: 63
+    test_window: 63
+    train_window: 504
+data:
+  benchmark: ^NSEI
+  benchmark_ticker: ^NSEI
+  cache_data: true
+  end_date: '2024-12-31'
+  interval: 1d
+  min_history_days: 252
+  start_date: '2018-01-01'
+  tickers:
+  - RELIANCE.NS
+  - TCS.NS
+  - HDFCBANK.NS
+  - INFY.NS
+  - ICICIBANK.NS
+  - HINDUNILVR.NS
+  - SBIN.NS
+  - BAJFINANCE.NS
+  - BHARTIARTL.NS
+  - KOTAKBANK.NS
+  - LT.NS
+  - AXISBANK.NS
+  - WIPRO.NS
+  - HCLTECH.NS
+  - ASIANPAINT.NS
+  - MARUTI.NS
+  - TITAN.NS
+  - NESTLEIND.NS
+  - POWERGRID.NS
+  - TECHM.NS
+  raw_data_path: data/raw
+  processed_data_path: data/processed
+  features_data_path: data/features
+ensemble:
+  method: weighted_average
+  weights:
+    lightgbm: 0.4
+    random_forest: 0.2
+    xgboost: 0.4
+  stacking_meta_model: logistic
+evaluation:
+  annualization_factor: 252
+  metrics:
+  - cagr
+  - sharpe
+  - max_drawdown
+  - win_rate
+  - alpha
+  - beta
+  - calmar
+  - sortino
+  output_dir: results/
+  risk_free_rate: 0.065
+features:
+  atr_period: 14
+  atr_window: 14
+  bb_period: 20
+  bb_std: 2
+  bb_window: 20
+  cross_sectional_rank: true
+  lag_periods:
+  - 1
+  - 5
+  - 10
+  - 21
+  ma_windows:
+  - 20
+  - 50
+  - 100
+  - 200
+  macd_fast: 12
+  macd_signal: 9
+  macd_slow: 26
+  momentum_windows:
+  - 21
+  - 63
+  - 126
+  - 252
+  rsi_period: 14
+  rsi_window: 14
+  vol_windows:
+  - 10
+  - 21
+  - 63
+  zscore_window: 63
+  cross_section_rank: true
+labeling:
+  horizons:
+  - 21
+  - 63
+  - 126
+  - 252
+  label_type: binary
+  method: binary
+  min_return_threshold: 0.05
+  outperform_threshold: 0.0
+  primary_horizon: 63
+  triple_barrier:
+    enabled: false
+models:
+  cv_gap: 21
+  cv_splits: 5
+  early_stopping_rounds: 50
+  feature_importance_top_n: 30
+  lightgbm:
+    colsample_bytree: 0.8
+    learning_rate: 0.05
+    max_depth: 6
+    min_child_samples: 20
+    n_estimators: 300
+    num_leaves: 63
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+    subsample: 0.8
+    verbose: -1
+  random_forest:
+    max_depth: 8
+    max_features: sqrt
+    min_samples_leaf: 5
+    min_samples_split: 10
+    n_estimators: 200
+    n_jobs: -1
+  saved_models: models/saved_models
+  test_size: 0.2
+  use_models:
+  - xgboost
+  - lightgbm
+  - random_forest
+  xgboost:
+    colsample_bytree: 0.8
+    early_stopping_rounds: 30
+    eval_metric: logloss
+    learning_rate: 0.05
+    max_depth: 6
+    min_child_weight: 5
+    n_estimators: 300
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+    subsample: 0.8
+portfolio:
+  l2_gamma: 0.1
+  max_weight: 0.2
+  method: max_sharpe
+  min_weight: 0.02
+  regularization: 0.1
+  risk_free_rate: 0.065
+  target_return: null
+  solver: SLSQP
+project:
+  log_level: INFO
+  name: quant-longterm-ai
+  random_seed: 42
+  seed: 42
+  version: 1.0.0
+ranking:
+  min_score_threshold: 0.5
+  rebalance_frequency: monthly
+  score_method: probability
+  top_n: 10
+risk:
+  max_drawdown_exit: 0.25
+  max_drawdown_limit: 0.25
+  max_portfolio_volatility: 0.6
+  max_vol_threshold: 0.6
+  position_sizing: equal
+  stop_loss_pct: 0.15
+  volatility_filter: true
+  volatility_filter_threshold: 0.6
+  volatility_filter_window: 21
