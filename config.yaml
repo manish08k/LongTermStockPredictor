@@ -1,183 +1,254 @@
-backtest:
-  benchmark: ^NSEI
-  end_date: '2024-12-31'
-  initial_capital: 1000000
-  min_trading_days: 126
-  rebalance_frequency: monthly
-  slippage: 0.0005
-  slippage_bps: 0.0005
-  start_date: '2020-01-01'
-  transaction_cost: 0.001
-  transaction_cost_bps: 0.001
-  walk_forward:
-    step: 63
-    test_window: 63
-    train_window: 504
-data:
-  benchmark: ^NSEI
-  benchmark_ticker: ^NSEI
-  cache_data: true
-  end_date: '2024-12-31'
-  interval: 1d
-  min_history_days: 252
-  start_date: '2018-01-01'
-  tickers:
-  - RELIANCE.NS
-  - TCS.NS
-  - HDFCBANK.NS
-  - INFY.NS
-  - ICICIBANK.NS
-  - HINDUNILVR.NS
-  - SBIN.NS
-  - BAJFINANCE.NS
-  - BHARTIARTL.NS
-  - KOTAKBANK.NS
-  - LT.NS
-  - AXISBANK.NS
-  - WIPRO.NS
-  - HCLTECH.NS
-  - ASIANPAINT.NS
-  - MARUTI.NS
-  - TITAN.NS
-  - NESTLEIND.NS
-  - POWERGRID.NS
-  - TECHM.NS
-  raw_data_path: data/raw
-  processed_data_path: data/processed
-  features_data_path: data/features
-ensemble:
-  method: weighted_average
-  weights:
-    lightgbm: 0.4
-    random_forest: 0.2
-    xgboost: 0.4
-  stacking_meta_model: logistic
-evaluation:
-  annualization_factor: 252
-  metrics:
-  - cagr
-  - sharpe
-  - max_drawdown
-  - win_rate
-  - alpha
-  - beta
-  - calmar
-  - sortino
-  output_dir: results/
-  risk_free_rate: 0.065
-features:
-  atr_period: 14
-  atr_window: 14
-  bb_period: 20
-  bb_std: 2
-  bb_window: 20
-  cross_sectional_rank: true
-  lag_periods:
-  - 1
-  - 5
-  - 10
-  - 21
-  ma_windows:
-  - 20
-  - 50
-  - 100
-  - 200
-  macd_fast: 12
-  macd_signal: 9
-  macd_slow: 26
-  momentum_windows:
-  - 21
-  - 63
-  - 126
-  - 252
-  rsi_period: 14
-  rsi_window: 14
-  vol_windows:
-  - 10
-  - 21
-  - 63
-  zscore_window: 63
-  cross_section_rank: true
-labeling:
-  horizons:
-  - 21
-  - 63
-  - 126
-  - 252
-  label_type: binary
-  method: binary
-  min_return_threshold: 0.05
-  outperform_threshold: 0.0
-  primary_horizon: 63
-  triple_barrier:
-    enabled: false
-models:
-  cv_gap: 21
-  cv_splits: 5
-  early_stopping_rounds: 50
-  feature_importance_top_n: 30
-  lightgbm:
-    colsample_bytree: 0.8
-    learning_rate: 0.05
-    max_depth: 6
-    min_child_samples: 20
-    n_estimators: 300
-    num_leaves: 63
-    reg_alpha: 0.1
-    reg_lambda: 1.0
-    subsample: 0.8
-    verbose: -1
-  random_forest:
-    max_depth: 8
-    max_features: sqrt
-    min_samples_leaf: 5
-    min_samples_split: 10
-    n_estimators: 200
-    n_jobs: -1
-  saved_models: models/saved_models
-  test_size: 0.2
-  use_models:
-  - xgboost
-  - lightgbm
-  - random_forest
-  xgboost:
-    colsample_bytree: 0.8
-    early_stopping_rounds: 30
-    eval_metric: logloss
-    learning_rate: 0.05
-    max_depth: 6
-    min_child_weight: 5
-    n_estimators: 300
-    reg_alpha: 0.1
-    reg_lambda: 1.0
-    subsample: 0.8
-portfolio:
-  l2_gamma: 0.1
-  max_weight: 0.2
-  method: max_sharpe
-  min_weight: 0.02
-  regularization: 0.1
-  risk_free_rate: 0.065
-  target_return: null
-  solver: SLSQP
+# ════════════════════════════════════════════════════════════════════════
+# config.yaml – Production config for NSE Indian Equities Quant Platform
+# ════════════════════════════════════════════════════════════════════════
+
 project:
-  log_level: INFO
-  name: quant-longterm-ai
+  name: "NSE Quant AI Platform"
+  version: "2.0.0"
   random_seed: 42
-  seed: 42
-  version: 1.0.0
-ranking:
-  min_score_threshold: 0.5
-  rebalance_frequency: monthly
-  score_method: probability
-  top_n: 10
-risk:
-  max_drawdown_exit: 0.25
-  max_drawdown_limit: 0.25
-  max_portfolio_volatility: 0.6
-  max_vol_threshold: 0.6
-  position_sizing: equal
-  stop_loss_pct: 0.15
-  volatility_filter: true
-  volatility_filter_threshold: 0.6
-  volatility_filter_window: 21
+  log_level: "INFO"
+  log_file: "logs/pipeline.log"
+
+# ── Data ──────────────────────────────────────────────────────────────────
+data:
+  # Universe selection: "nifty50" | "nifty_next50" | "midcap" | "full"
+  universe: "full"
+
+  # Override with custom tickers (leave empty to use universe)
+  tickers: []
+
+  start_date: "2015-01-01"
+  end_date:   "2024-12-31"
+  interval:   "1d"
+  benchmark_ticker: "^NSEI"
+
+  cache_data:       true
+  raw_data_path:    "data/raw"
+  min_history_days: 252
+
+  # Sector mapping for NSE stocks
+  sectors:
+    "RELIANCE.NS":    "Energy"
+    "ONGC.NS":        "Energy"
+    "BPCL.NS":        "Energy"
+    "COALINDIA.NS":   "Energy"
+    "NTPC.NS":        "Utilities"
+    "POWERGRID.NS":   "Utilities"
+    "TCS.NS":         "IT"
+    "INFY.NS":        "IT"
+    "WIPRO.NS":       "IT"
+    "HCLTECH.NS":     "IT"
+    "TECHM.NS":       "IT"
+    "LTIMINDTREE.NS": "IT"
+    "MPHASIS.NS":     "IT"
+    "COFORGE.NS":     "IT"
+    "PERSISTENT.NS":  "IT"
+    "HDFCBANK.NS":    "Financials"
+    "ICICIBANK.NS":   "Financials"
+    "SBIN.NS":        "Financials"
+    "KOTAKBANK.NS":   "Financials"
+    "AXISBANK.NS":    "Financials"
+    "BAJFINANCE.NS":  "Financials"
+    "BAJAJFINSV.NS":  "Financials"
+    "INDUSINDBK.NS":  "Financials"
+    "SBILIFE.NS":     "Financials"
+    "HDFCLIFE.NS":    "Financials"
+    "MUTHOOTFIN.NS":  "Financials"
+    "CHOLAFIN.NS":    "Financials"
+    "AUBANK.NS":      "Financials"
+    "FEDERALBNK.NS":  "Financials"
+    "ABCAPITAL.NS":   "Financials"
+    "HINDUNILVR.NS":  "FMCG"
+    "ITC.NS":         "FMCG"
+    "NESTLEIND.NS":   "FMCG"
+    "BRITANNIA.NS":   "FMCG"
+    "DABUR.NS":       "FMCG"
+    "MARICO.NS":      "FMCG"
+    "COLPAL.NS":      "FMCG"
+    "GODREJCP.NS":    "FMCG"
+    "TATACONSUM.NS":  "FMCG"
+    "MARUTI.NS":      "Auto"
+    "TATAMOTORS.NS":  "Auto"
+    "EICHERMOT.NS":   "Auto"
+    "HEROMOTOCO.NS":  "Auto"
+    "BAJAJ-AUTO.NS":  "Auto"
+    "BALKRISIND.NS":  "Auto"
+    "LT.NS":          "Industrials"
+    "SIEMENS.NS":     "Industrials"
+    "HAVELLS.NS":     "Industrials"
+    "VOLTAS.NS":      "Industrials"
+    "ASIANPAINT.NS":  "Materials"
+    "ULTRACEMCO.NS":  "Materials"
+    "JSWSTEEL.NS":    "Materials"
+    "TATASTEEL.NS":   "Materials"
+    "HINDALCO.NS":    "Materials"
+    "VEDL.NS":        "Materials"
+    "GRASIM.NS":      "Materials"
+    "AMBUJACEM.NS":   "Materials"
+    "ACC.NS":         "Materials"
+    "PIDILITIND.NS":  "Materials"
+    "DEEPAKNTR.NS":   "Materials"
+    "BERGEPAINT.NS":  "Materials"
+    "SUNPHARMA.NS":   "Pharma"
+    "DRREDDY.NS":     "Pharma"
+    "CIPLA.NS":       "Pharma"
+    "DIVISLAB.NS":    "Pharma"
+    "LUPIN.NS":       "Pharma"
+    "TORNTPHARM.NS":  "Pharma"
+    "IPCALAB.NS":     "Pharma"
+    "ALKEM.NS":       "Pharma"
+    "LALPATHLAB.NS":  "Pharma"
+    "METROPOLIS.NS":  "Pharma"
+    "APOLLOHOSP.NS":  "Healthcare"
+    "MAXHEALTH.NS":   "Healthcare"
+    "TITAN.NS":       "Consumer"
+    "DMART.NS":       "Consumer"
+    "TRENT.NS":       "Consumer"
+    "INDHOTEL.NS":    "Consumer"
+    "BHARTIARTL.NS":  "Telecom"
+    "ADANIENT.NS":    "Conglomerate"
+    "ADANIPORTS.NS":  "Infrastructure"
+    "UPL.NS":         "Agrochem"
+    "COROMANDEL.NS":  "Agrochem"
+    "NAUKRI.NS":      "Tech/Internet"
+    "POLICYBZR.NS":   "Tech/Internet"
+    "SOLARINDS.NS":   "Industrials"
+
+# ── Features ──────────────────────────────────────────────────────────────
+features:
+  momentum_windows: [21, 63, 126, 252]
+  ma_windows:       [20, 50, 100, 200]
+  vol_windows:      [10, 21, 63]
+  rsi_window:       14
+  macd_fast:        12
+  macd_slow:        26
+  macd_signal:      9
+  bb_window:        20
+  bb_std:           2.0
+  atr_window:       14
+  lag_periods:      [1, 5, 10, 21]
+  zscore_window:    252
+
+# ── Target ────────────────────────────────────────────────────────────────
+target:
+  forward_returns_days: 21     # 1-month forward return
+  label_method: "binary"       # "binary" | "tertile" | "quintile"
+  threshold: 0.0               # 0 = above/below median
+
+# ── Models ────────────────────────────────────────────────────────────────
+models:
+  use_models:
+    - xgboost
+    - lightgbm
+    - random_forest
+    - extra_trees
+
+  cv_splits:             5
+  feature_importance_top_n: 50
+  saved_models:          "models/saved_models"
+
+  walk_forward:
+    train_window:      504    # ~2 years trading days
+    test_window:       63     # ~3 months
+    gap:               21     # 1 month gap (purging)
+    expanding_window:  true
+
+  ensemble:
+    method: "weighted_avg"    # "avg" | "weighted_avg" | "stacking"
+    weights:
+      xgboost:      0.30
+      lightgbm:     0.30
+      random_forest: 0.20
+      extra_trees:  0.20
+
+  xgboost:
+    n_estimators:      600
+    max_depth:         5
+    learning_rate:     0.03
+    subsample:         0.75
+    colsample_bytree:  0.75
+    min_child_weight:  10
+    gamma:             0.2
+    reg_alpha:         0.1
+    reg_lambda:        2.0
+    eval_metric:       "auc"
+    tree_method:       "hist"
+
+  lightgbm:
+    n_estimators:      600
+    max_depth:         5
+    learning_rate:     0.03
+    num_leaves:        31
+    subsample:         0.75
+    colsample_bytree:  0.75
+    min_child_samples: 30
+    reg_alpha:         0.1
+    reg_lambda:        2.0
+
+  catboost:
+    n_estimators:      600
+    max_depth:         5
+    learning_rate:     0.03
+    reg_lambda:        3.0
+
+  random_forest:
+    n_estimators:      400
+    max_depth:         7
+    min_samples_leaf:  30
+    max_features:      0.4
+    n_jobs:            -1
+
+  extra_trees:
+    n_estimators:      400
+    max_depth:         8
+    min_samples_leaf:  25
+    max_features:      0.5
+
+# ── Deep Learning ─────────────────────────────────────────────────────────
+deep_learning:
+  enabled: false              # Set true to enable LSTM/GRU/Transformer
+  sequence_length:    60      # Input window in days
+  hidden_size:        128
+  num_layers:         2
+  dropout:            0.2
+  batch_size:         64
+  epochs:             50
+  learning_rate:      0.001
+  early_stopping_patience: 10
+  checkpoint_dir:     "models/dl_checkpoints"
+  use_gpu:            true
+
+# ── Portfolio ─────────────────────────────────────────────────────────────
+portfolio:
+  method: "hrp"               # max_sharpe | min_volatility | risk_parity | hrp | equal_weight
+  top_n_stocks:       20      # Number of stocks to hold
+  min_score_pct:      0.60    # Minimum ensemble score percentile
+  max_weight:         0.12    # Max single stock weight
+  min_weight:         0.03    # Min single stock weight
+  risk_free_rate:     0.065   # ~6.5% (Indian 10Y Gsec)
+  regularization:     0.0001
+  sector_max_exposure: 0.35
+  turnover_limit:     0.80    # Max 80% turnover per rebalance
+  lookback_days:      252
+
+# ── Backtesting ───────────────────────────────────────────────────────────
+backtesting:
+  initial_capital:    1_000_000   # ₹10 Lakh
+  rebalance_freq:     "monthly"   # daily | weekly | monthly | quarterly
+  transaction_cost:   0.001       # 0.1% per trade (brokerage + STT)
+  slippage:           0.0005      # 0.05% slippage
+  benchmark:          "^NSEI"
+  start_date:         "2018-01-01"
+  end_date:           "2024-12-31"
+  save_charts:        true
+  charts_dir:         "outputs/charts"
+
+# ── Outputs ───────────────────────────────────────────────────────────────
+outputs:
+  dir:                "outputs"
+  top_stocks_csv:     "outputs/top_stocks.csv"
+  portfolio_csv:      "outputs/portfolio.csv"
+  backtest_csv:       "outputs/backtest_results.csv"
+  model_metrics_csv:  "outputs/model_metrics.csv"
+  feature_imp_csv:    "outputs/feature_importance.csv"
+  trades_csv:         "outputs/trades.csv"

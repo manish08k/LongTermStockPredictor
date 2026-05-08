@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from src.utils import get_logger, annualized_return, sharpe_ratio, max_drawdown
+from src.utils import get_logger, annualized_return, sharpe_ratio, max_drawdown, sortino_ratio
 
 log = get_logger(__name__)
 
@@ -247,8 +247,7 @@ class BacktestEngine:
         calmar = port_cagr / abs(port_mdd) if port_mdd != 0 else 0.0
 
         # Sortino
-        downside = returns[returns < 0].std() * np.sqrt(252)
-        sortino = (port_cagr - self.risk_free) / (downside + 1e-10)
+        sortino = sortino_ratio(returns, rf=self.risk_free)
 
         # Trade statistics
         n_trades = len(trades)
