@@ -54,3 +54,4 @@ build/
 .coverage
 htmlcov/data/features/*.parquet
 data/features/*.parquet
+*.parquet
